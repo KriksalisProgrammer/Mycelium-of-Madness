@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
         float currentMaxSpeed = isSprinting ? sprintSpeed : maxSpeed;
         float currentAccel = isSprinting ? sprintAcceleration : acceleration;
         float rate = targetMove != Vector3.zero ? currentAccel : deceleration;
-        _currentMove = Vector3.MoveTowards(_currentMove, targetMove * currentMaxSpeed, rate * Time.deltaTime);
+        _currentMove = Vector3.MoveTowards(_currentMove, targetMove * currentMaxSpeed, rate * UnityEngine.Time.deltaTime);
 
         // Блокировка скольжения на откосах
         if (_isGrounded && OnSteepSlope(out Vector3 slopeNormal))
@@ -79,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
             _currentMove = Vector3.ProjectOnPlane(_currentMove, slopeNormal);
         }
 
-        _controller.Move(_currentMove * Time.deltaTime);
+        _controller.Move(_currentMove * UnityEngine.Time.deltaTime);
 
         // Поворот персонажа за направлением движения
         if (_currentMove.magnitude > 0.1f)
@@ -88,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRotation,
-                rotationSpeed * Time.deltaTime
+                rotationSpeed * UnityEngine.Time.deltaTime
             );
         }
     }
@@ -99,8 +99,8 @@ public class PlayerMovement : MonoBehaviour
         if (_input.Player.Jump.triggered && _isGrounded)
             _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
-        _velocity.y += gravity * Time.deltaTime;
-        _controller.Move(_velocity * Time.deltaTime);
+        _velocity.y += gravity * UnityEngine.Time.deltaTime;
+        _controller.Move(_velocity * UnityEngine.Time.deltaTime);
     }
 
     bool OnSteepSlope(out Vector3 slopeNormal)

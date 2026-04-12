@@ -31,7 +31,7 @@ using UnityEngine.UI;
                 float t = 0f;
                 while (t < flashDuration)
                 {
-                    t += Time.deltaTime;
+                    t += UnityEngine.Time.deltaTime;
                     float alpha = Mathf.Lerp(flashColor.a,0f , t/flashDuration);
                     screenOverlay.color = new Color(flashColor.r, flashColor.g, flashColor.b, alpha);
                     yield return null;

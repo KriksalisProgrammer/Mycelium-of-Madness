@@ -84,7 +84,7 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(
             transform.rotation,
             rotation,
-            rotationSmoothing * Time.deltaTime
+            rotationSmoothing * UnityEngine.Time.deltaTime
         );
     }
 
@@ -93,9 +93,9 @@ public class CameraController : MonoBehaviour
         if (!enableSway) return;
 
         // Лёгкое покачивание камеры — добавляет тревожность
-        float swayX = Mathf.Sin(Time.time * horrorSwaySpeed) * horrorSwayAmount;
-        float swayY = Mathf.Sin(Time.time * horrorSwaySpeed * 0.5f) * horrorSwayAmount * 0.5f;
+        float swayX = Mathf.Sin(UnityEngine.Time.time * horrorSwaySpeed) * horrorSwayAmount;
+        float swayY = Mathf.Sin(UnityEngine.Time.time * horrorSwaySpeed * 0.5f) * horrorSwayAmount * 0.5f;
 
-        transform.position += new Vector3(swayX, swayY, 0f) * Time.deltaTime;
+        transform.position += new Vector3(swayX, swayY, 0f) * UnityEngine.Time.deltaTime;
     }
 }
