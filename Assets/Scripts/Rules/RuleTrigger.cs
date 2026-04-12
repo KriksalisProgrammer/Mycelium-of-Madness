@@ -13,7 +13,7 @@
         public bool triggerOnce = true;
         public bool triggered =false;
 
-        private void OnTriggerEnter2D(Collider other)
+        private void OnTriggerEnter3D(Collider other)
         {
             if(other.CompareTag("Player")) return;
             if(triggerOnce &&triggered) return;

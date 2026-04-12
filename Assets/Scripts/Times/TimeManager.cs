@@ -34,7 +34,7 @@ public class TimeManager : MonoBehaviour
         {
             int h = (int)_currentHour;
             int m = (int)((_currentHour - h) / 60f);
-            return $"{h:00}{m:00}";
+            return $"{h:00}:{m:00}";
         }
     }
     
@@ -45,24 +45,30 @@ public class TimeManager : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+        _currentHour = startHour;
+    }
+    private void Update()
+    {
         AdvanceTime();
         UpdateSun();
         CheckEvents();
     }
-
     private void AdvanceTime()
     {
-        _currentHour += (_currentHour/60f) * UnityEngine.Time.deltaTime;
+        float minutesToAdd = minutesPerSecond * UnityEngine.Time.deltaTime;
+        _currentHour += minutesToAdd / 60f;
+        
         if (_currentHour >= 24f)
         {
-            _currentHour = 24f;
+            _currentHour -= 24f;
             ResetDailyFlag();
         }
     }
 
     private void UpdateSun()
     {
-        if(SunLight==null)  return;
+        if(SunLight ==null)  return;
 
         float t = _currentHour / 24f;
         float angel = (t * 360f) - 90f;
