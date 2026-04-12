@@ -32,9 +32,9 @@ public class TimeManager : MonoBehaviour
     {
         get
         {
-            int h = (int)_currentHour;
-            int m = (int)((_currentHour - h) / 60f);
-            return $"{h:00}:{m:00}";
+            int hours = Mathf.FloorToInt(_currentHour);
+            int minutes = Mathf.FloorToInt((_currentHour - hours) * 60f);
+            return $"{hours:00}:{minutes:00}";
         }
     }
     
@@ -92,24 +92,21 @@ public class TimeManager : MonoBehaviour
 
     private void CheckEvents()
     {
-        if (!sunriseFired && _currentHour >= 6f && _currentHour < 6.1f)
+        if (!sunriseFired && _currentHour >= 6f && _currentHour < 6.5f)
         {
             sunriseFired = true;
-            Debug.Log("Sunrise");
             onSunrise?.Invoke();
         }
-
-        if (!sunsetFired && _currentHour >= 20f && _currentHour < 20.1f)
+        
+        if (!sunsetFired && _currentHour >= 20f && _currentHour < 20.5f)
         {
             sunsetFired = true;
-            Debug.Log("Sunset");
             onSunset?.Invoke();
         }
-
-        if (!midnightFired && _currentHour >= 0f && _currentHour < 0.1f)
+        
+        if (!midnightFired && (_currentHour >= 0f && _currentHour < 0.5f || _currentHour >= 23.5f))
         {
             midnightFired = true;
-            Debug.Log("Midnight");
             OnMidnight?.Invoke();
         }
     }
