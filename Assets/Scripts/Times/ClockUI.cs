@@ -8,7 +8,7 @@ using UnityEngine.UI;
  
         [Header("Color")]
         public Color dayColor   = new Color(1f,   0.9f, 0.6f);
-        public Color nightColor = new Color(0.4f, 0.5f, 0.8f);
+        public Color nightColor = new Color(1f, 0f, 0f);
             
             
         void Update()
