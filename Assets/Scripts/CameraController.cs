@@ -30,7 +30,7 @@ public class CameraController : MonoBehaviour
     void Awake()
     {
         _input = new InputSystem_Actions();
-        // Начальные углы с текущего поворота камеры
+      
         _yaw = transform.eulerAngles.y;
         _pitch = transform.eulerAngles.x;
     }
@@ -69,11 +69,11 @@ public class CameraController : MonoBehaviour
 
     void HandlePosition()
     {
-        // Позиция камеры вокруг игрока
+  
         Quaternion rotation = Quaternion.Euler(_pitch, _yaw, 0f);
         Vector3 targetPosition = target.position + rotation * offset;
 
-        // Плавное следование
+   
         transform.position = Vector3.SmoothDamp(
             transform.position,
             targetPosition,
@@ -91,8 +91,7 @@ public class CameraController : MonoBehaviour
     void HandleSway()
     {
         if (!enableSway) return;
-
-        // Лёгкое покачивание камеры — добавляет тревожность
+        
         float swayX = Mathf.Sin(UnityEngine.Time.time * horrorSwaySpeed) * horrorSwayAmount;
         float swayY = Mathf.Sin(UnityEngine.Time.time * horrorSwaySpeed * 0.5f) * horrorSwayAmount * 0.5f;
 
