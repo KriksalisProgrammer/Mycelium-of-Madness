@@ -4,106 +4,87 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float maxSpeed = 5f;
-    public float acceleration = 8f;
-    public float deceleration = 12f;
-    public float rotationSpeed = 10f;
+    public float walkSpeed = 4f;
+    public float sprintSpeed = 7f;
+    public float acceleration = 10f;
+    public float deceleration = 14f;
 
-    [Header("Sprint")]
-    public float sprintSpeed = 9f;
-    public float sprintAcceleration = 12f;
-    
     [Header("Physics")]
     public float gravity = -20f;
-    public float jumpHeight = 1.5f;
+    public float jumpHeight = 1.2f;
     public float slopeLimit = 45f;
-
-    [Header("References")]
-    public Transform cameraTransform;
+    
+    [Header("First Person")]
+    public Transform cameraHolder;
 
     private CharacterController _controller;
     private InputSystem_Actions _input;
-
     private Vector3 _velocity;
     private Vector3 _currentMove;
     private bool _isGrounded;
 
-    void Awake()
+    private void Awake()
     {
         _controller = GetComponent<CharacterController>();
         _controller.slopeLimit = slopeLimit;
         _input = new InputSystem_Actions();
     }
 
-    void OnEnable() => _input.Enable();
-    void OnDisable() => _input.Disable();
+    private void OnEnable() => _input.Enable();
+    private void OnDisable() => _input.Disable();
 
-    void Update()
+    private void Update()
     {
         _isGrounded = _controller.isGrounded;
-
-        if (_isGrounded && _velocity.y < 0)
+        if (_isGrounded && _velocity.y < 0f)
             _velocity.y = -2f;
 
         HandleMovement();
         HandleGravity();
     }
 
-    void HandleMovement()
+    private void HandleMovement()
     {
         Vector2 moveInput = _input.Player.Move.ReadValue<Vector2>();
 
-        // Направление относительно камеры
         Vector3 targetMove = Vector3.zero;
-        if (moveInput != Vector2.zero)
+        if (moveInput != Vector2.zero && cameraHolder != null)
         {
-            Vector3 camForward = cameraTransform.forward;
-            Vector3 camRight = cameraTransform.right;
-            camForward.y = 0f;
-            camRight.y = 0f;
+            Vector3 forward = cameraHolder.forward;
+            Vector3 right   = cameraHolder.right;
+            forward.y = 0f;
+            right.y   = 0f;
 
-            targetMove = (camForward.normalized * moveInput.y +
-                          camRight.normalized * moveInput.x).normalized;
+            targetMove = (forward.normalized * moveInput.y +
+                          right.normalized  * moveInput.x).normalized;
         }
 
-       
-        bool isSprinting = _input.Player.Sprint.IsPressed();
-        float currentMaxSpeed = isSprinting ? sprintSpeed : maxSpeed;
-        float currentAccel = isSprinting ? sprintAcceleration : acceleration;
-        float rate = targetMove != Vector3.zero ? currentAccel : deceleration;
-        _currentMove = Vector3.MoveTowards(_currentMove, targetMove * currentMaxSpeed, rate * UnityEngine.Time.deltaTime);
+        bool isSprinting   = _input.Player.Sprint.IsPressed();
+        float targetSpeed  = isSprinting ? sprintSpeed : walkSpeed;
+        float rate         = targetMove != Vector3.zero ? acceleration : deceleration;
 
-        // Блокировка скольжения на откосах
+        _currentMove = Vector3.MoveTowards(
+            _currentMove,
+            targetMove * targetSpeed,
+            rate * Time.deltaTime
+        );
+
         if (_isGrounded && OnSteepSlope(out Vector3 slopeNormal))
-        {
             _currentMove = Vector3.ProjectOnPlane(_currentMove, slopeNormal);
-        }
 
-        _controller.Move(_currentMove * UnityEngine.Time.deltaTime);
-
-        // Поворот персонажа за направлением движения
-        if (_currentMove.magnitude > 0.1f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(_currentMove);
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                rotationSpeed * UnityEngine.Time.deltaTime
-            );
-        }
+        _controller.Move(_currentMove * Time.deltaTime);
     }
 
-    void HandleGravity()
+    private void HandleGravity()
     {
-        // Прыжок
         if (_input.Player.Jump.triggered && _isGrounded)
             _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
-        _velocity.y += gravity * UnityEngine.Time.deltaTime;
-        _controller.Move(_velocity * UnityEngine.Time.deltaTime);
+        _velocity.y += gravity * Time.deltaTime;
+        _controller.Move(_velocity * Time.deltaTime);
     }
 
-    bool OnSteepSlope(out Vector3 slopeNormal)
+    private bool OnSteepSlope(out Vector3 slopeNormal)
     {
         slopeNormal = Vector3.up;
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1.5f))
