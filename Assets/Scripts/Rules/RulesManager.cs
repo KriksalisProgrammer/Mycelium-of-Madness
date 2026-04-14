@@ -14,12 +14,12 @@ public class RulesManager:MonoBehaviour
 
     private void Awake()
     {
-        if(Instance != null && Instance != this)
-        {
+        if (Instance != null && Instance != this) {
             Destroy(gameObject);
+            return;
         }
-        else
-        {return;}
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
