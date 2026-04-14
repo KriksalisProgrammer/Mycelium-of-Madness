@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stylized Mushrooms collection
+* source:	https://sketchfab.com/3d-models/stylized-mushrooms-collection-b2b6da58a8ee4bbb890cace600d596e3
+* author:	RichardNoren3D (https://sketchfab.com/RichardNoren3D)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stylized Mushrooms collection" (https://sketchfab.com/3d-models/stylized-mushrooms-collection-b2b6da58a8ee4bbb890cace600d596e3) by RichardNoren3D (https://sketchfab.com/RichardNoren3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

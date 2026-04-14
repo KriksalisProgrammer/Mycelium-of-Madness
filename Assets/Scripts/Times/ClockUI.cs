@@ -34,8 +34,7 @@ using UnityEngine.Events;
             TimeManager.Instance.OnMinutePassed.AddListener(UpdateTimeDisplay);
             TimeManager.Instance.OnDayPassed.AddListener(UpdateDayDisplay);
             TimeManager.Instance.OnPhaseChanged.AddListener(OnInfectionPhaseChanged);
-
-            // Первичное обновление
+            
             UpdateTimeDisplay();
             UpdateDayDisplay();
         }
