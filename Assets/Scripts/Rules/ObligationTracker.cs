@@ -71,6 +71,7 @@ public class ObligationTracker : MonoBehaviour
     {
         foreach (var src in _sources)
             src.ResetForNewDay();
+        MushroomSpawner.Instance?.SpawnMushroomsForNewDay();
     }
 
     // Полезный метод для отладки

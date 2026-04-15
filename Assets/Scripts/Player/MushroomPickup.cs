@@ -36,6 +36,10 @@ public class MushroomPickup : MonoBehaviour, IPickupable
     public void Collect()
     {
         SetHighlight(false);
-        Destroy(gameObject);       
+    
+        if (MushroomSpawner.Instance != null)
+            MushroomSpawner.Instance.ReturnToPool(gameObject);
+        else
+            Destroy(gameObject);     
     }
 }
