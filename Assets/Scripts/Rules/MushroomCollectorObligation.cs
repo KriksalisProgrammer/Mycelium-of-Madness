@@ -1,95 +1,58 @@
 ﻿using UnityEngine;
 using TMPro;
-public class MushroomCollectorObligation : MonoBehaviour, IObligationSource
-{
-    [Header("Responsibility: mushrooms")]
-    public int requiredCount = 10;
 
-    [Header("Raycast")]
-    public Camera playerCamera;
-    public float  pickupRange = 2.5f;
-    public LayerMask mushroomLayer;
-    
+public class MushroomCollectorObligation : BaseObligation
+{
+    [Header("Mushroom Specific")]
+    public int mushroomsPerPickup = 1;
+
     [Header("UI")]
     public TextMeshProUGUI counterText;
-    
-    private InputSystem_Actions _input;
-    private int _collected;
-    private MushroomPickup _highlighted;
-    
 
-    public string ObligationId  => "underfed_mycelium";
-    public bool   IsFulfilled   => _collected >= requiredCount;
-    public void ResetForNewDay()
-    {
-        _collected = 0;
-        UpdateUI();
-    }
-    private void Awake()
-    {
-        _input = new InputSystem_Actions();
-        if (playerCamera == null)
-            playerCamera = Camera.main;
-    }
     private void OnEnable()
     {
-        _input.Enable();
         ObligationTracker.Instance?.Register(this);
+
+        // Надёжная подписка
+        if (PickupSystem.Instance != null)
+        {
+            PickupSystem.Instance.OnItemPickedUp.AddListener(OnItemPickedUp);
+            Debug.Log("[MushroomObligation] Subscribed to PickupSystem");
+        }
+        else
+        {
+            Debug.LogWarning("[MushroomObligation] PickupSystem.Instance is null!");
+        }
+
         UpdateUI();
     }
 
     private void OnDisable()
     {
-        _input.Disable();
         ObligationTracker.Instance?.Unregister(this);
+
+        if (PickupSystem.Instance != null)
+            PickupSystem.Instance.OnItemPickedUp.RemoveListener(OnItemPickedUp);
     }
 
-    private void Update()
+    private void OnItemPickedUp(string itemType, int amount)
     {
-        HandleHighlight();
-
-        if (_input.Player.Interact.WasPressedThisFrame())
-            TryPickup();
-    }
-
-    private void HandleHighlight()
-    {
-        MushroomPickup hit = Raycast();
-
-        if (hit != _highlighted)
+        if (itemType.Equals("Mushroom", System.StringComparison.OrdinalIgnoreCase))
         {
-            _highlighted?.SetHighlight(false);
-            _highlighted = hit;
-            _highlighted?.SetHighlight(true);
+            AddProgress(amount * mushroomsPerPickup);
+            Debug.Log($"[MushroomObligation] Progress updated: {currentProgress}/{requiredCount}");
         }
     }
 
-    private void TryPickup()
+    protected override void OnProgressChanged()
     {
-        if (_highlighted == null) return;
-
-        _collected += _highlighted.amount;
-        _highlighted.Collect();
-        _highlighted = null;
-
-        Debug.Log($"[Mushroom] {_collected}/{requiredCount}");
+        base.OnProgressChanged();
         UpdateUI();
-    }
-
-    private MushroomPickup Raycast()
-    {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, mushroomLayer))
-        {
-            if (hit.collider.TryGetComponent(out MushroomPickup mushroom))
-                return mushroom;
-        }
-        return null;
     }
 
     private void UpdateUI()
     {
         if (counterText != null)
-            counterText.text = $"Грибы: {_collected} / {requiredCount}";
+            counterText.text = $"Грибы: {currentProgress} / {requiredCount}";
     }
 }

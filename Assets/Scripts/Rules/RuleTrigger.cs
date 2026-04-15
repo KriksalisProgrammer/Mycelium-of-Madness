@@ -20,7 +20,7 @@
             if(checkTimeOfDay && !IsViolationTime()) return;
             
             triggered = true;
-            RulesManager.Instance.ViolentRule(ruleid);
+            RulesManager.Instance.ViolateRule(ruleid);
         }
 
         private bool IsViolationTime()
