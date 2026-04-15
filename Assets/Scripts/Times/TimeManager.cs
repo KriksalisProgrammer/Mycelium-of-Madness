@@ -36,6 +36,7 @@ public class TimeManager : MonoBehaviour
         }
         Instance = this;
         CurrentHour = startHour;
+        
     }
     private void Update()
     {

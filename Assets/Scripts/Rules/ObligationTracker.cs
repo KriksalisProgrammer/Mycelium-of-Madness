@@ -74,6 +74,5 @@ public class ObligationTracker : MonoBehaviour
         MushroomSpawner.Instance?.SpawnMushroomsForNewDay();
     }
 
-    // Полезный метод для отладки
     public IReadOnlyList<IObligationSource> GetAllObligations() => _sources;
 }
