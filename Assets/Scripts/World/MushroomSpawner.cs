@@ -73,9 +73,15 @@ public class MushroomSpawner : MonoBehaviour
 
         if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, 2000f, groundLayer))
         {
+            Debug.Log($"[Spawner] Hit at Y={hit.point.y}, allowed={minHeight}–{maxHeight}");
             if (hit.point.y >= minHeight && hit.point.y <= maxHeight)
                 return hit.point;
+            else
+                Debug.LogWarning($"[Spawner] Height {hit.point.y} outside range!");
         }
+        else
+        {
+            Debug.LogWarning($"[Spawner] Raycast missed! Origin={rayOrigin}, layer={groundLayer.value}");
         }
 
         return Vector3.zero;
@@ -112,7 +118,14 @@ public class MushroomSpawner : MonoBehaviour
 
     private void ClearCurrentMushrooms()
     {
+        var toReturn = new List<GameObject>(activeMushrooms);
         activeMushrooms.Clear();
+    
+        foreach (var mush in toReturn)
+        {
+            mush.SetActive(false);
+            mushroomPool.Enqueue(mush);
+        }
     }
     
     [ContextMenu("Spawn Now")]
